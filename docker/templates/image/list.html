@@ -1,0 +1,27 @@
+{% extends "../base.html" %}
+{% block leftnav %}
+  {% include "leftnav.html" %}
+{% end %}
+{% block content %}
+    <div class="panel panel-default">
+      <!-- Default panel contents -->
+      <div class="panel-heading">Panel heading</div>
+      <div class="panel-body">
+        <p>...</p>
+      </div>
+
+      <!-- Table -->
+      <table class="table">
+        <tr>
+            <th>状态</th>
+            <th>创建时间</th>
+        </tr>
+        {% for image in images %}
+            <tr>
+                <td>{{image['Status']}}</td>
+                <td>{{image['Created']}}</td>
+            </tr>
+        {% end %}
+      </table>
+    </div>
+{% end %}
