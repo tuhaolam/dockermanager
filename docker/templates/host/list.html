@@ -1,0 +1,23 @@
+{% extends "../base.html" %}
+
+{% block content %}
+    <a href="/host/"><button type="button" class="btn btn-success">添加</button></a>
+    <table class="table table-striped">
+      <tr>
+          <th>名字</th>
+          <th>主机名</th>
+          <th>外网主机名</th>
+          <th>所有镜像</th>
+          <th>所有容器</th>
+      </tr>
+      {% for host in hosts %}
+        <tr>
+            <td><a href="/host/?id={{host.id}}">{{host.name}}</a></td>
+            <td>{{host.hostname}}</td>
+            <td>{{host.public_hostname}}</td>
+            <td><a href="/images/?host={{host.id}}">查看镜像</a></td>
+            <td><a href="/containers/?host={{host.id}}">查看容器</a></td>
+        </tr>
+      {% end %}
+    </table>
+{% end %}

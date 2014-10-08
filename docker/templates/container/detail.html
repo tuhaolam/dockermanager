@@ -1,0 +1,71 @@
+{% extends "../base.html" %}
+{% block content %}
+    <form method="post" action="/containers/{{hid}}/{{container.Id}}/delete">
+     <button type="submit" class="btn btn-danger">删除容器</button>
+     {% module xsrf_form_html() %}
+     </form>
+    <table class="table">
+            <tr><th>ID</th><td>{{container.Id}}</td></tr>
+            <tr><th>创建时间</th><td>{{container.Created}}</td></tr>
+            <tr><th>Path</th><td>{{container.Path}}</td></tr>
+            <tr><th>Args</th>
+                <td><ul>
+                    {% for a in container.Args %}
+                        <li>a</li>
+                    {% end %}</ul>
+                </td></tr>
+            <tr><th>Config</th>
+                <td>
+                    <ul>
+                        {% for  k in container.Config %}
+                            <li>{{k}}　: {{container.Config[k]}}</li>
+                        {% end %}
+                    </ul>
+            </td></tr>
+            <tr><th>状态</th>
+                <td>
+                   <form method="post" action="/containers/{{hid}}/{{container.Id}}/restart">
+                                        <button type="submit" class="btn btn-danger">重启</button>
+                                        {% module xsrf_form_html() %}
+                   　</form>
+                    <ul>
+                        {% for  k in container.State %}
+                            <li>{{k}}　: {{container.State[k]}}</li>
+                            {% if k=='Running' %}
+                                <h1></h1>
+                                {% if container.State[k] %}
+                                    <form method="post" action="/containers/{{hid}}/{{container.Id}}/stop">
+                                        <button type="submit" class="btn btn-danger">停止</button>
+                                        {% module xsrf_form_html() %}
+                                    </form>
+                                {% else %}
+                                    <form method="post" action="/containers/{{hid}}/{{container.Id}}/start">
+                                        <button type="submit" class="btn btn-success">启动</button>
+                                        {% module xsrf_form_html() %}
+                                    </form>
+                                {% end %}
+                            {% end %}
+
+                        {% end %}
+                    </ul>
+                </td></tr>
+            <tr><th>镜像</th><td><a href="/image/{{hid}}/{{container.Image}}">{{container.Image}}</a></td></tr>
+            <tr><th>网络配置</th>
+                <td>
+                    <ul>
+                        {% for  k in container.NetworkSettings %}
+                            <li>{{k}}　: {{container.NetworkSettings[k]}}</li>
+                        {% end %}
+                    </ul>
+                </td></tr>
+            <tr><th>ResolvConfPath</th>{{container.ResolvConfPath}}</td></tr>
+            <tr><th>主机配置</th>
+                <td>
+                    <ul>
+                        {% for  k in container.HostConfig %}
+                            <li>{{k}}　: {{container.HostConfig[k]}}</li>
+                        {% end %}
+                    </ul>
+                </td></tr>
+    </table>
+{% end %}

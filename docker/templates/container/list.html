@@ -1,0 +1,29 @@
+{% extends "../base.html" %}
+{% block content %}
+    <form method="post" action="/containers/?host=1">
+        <button type="submit" class="btn btn-success">创建容器</button>
+        {% module xsrf_form_html() %}
+    </form>
+    <table class="table table-striped">
+      <tr>
+          <th>容器ID</th>
+          <td>名字</td>
+          <th>镜像</th>
+          <!--<th>命令</th>
+          <th>创建时间</th>-->
+          <th>状态</th>
+          <!--<th>端口</th>-->
+      </tr>
+      {% for container in containers %}
+        <tr>
+            <td><a href="/containers/{{hid}}/{{container.Id[:12]}}">{{container.Id[:12]}}</a></td>
+            <td>{{'\n'.join(container.Names)}}</td>
+            <td>{{container.Image}}</td>
+            <!--<td>{{container.Command}}</td>-->
+            <!--<td>{{container.Created}}</td>-->
+            <td>{{container.Status}}</td>
+            <!--<td>{{container.Ports}}</td>-->
+        </tr>
+      {% end %}
+    </table>
+{% end %}

@@ -1,27 +1,29 @@
 {% extends "../base.html" %}
-{% block leftnav %}
-  {% include "leftnav.html" %}
-{% end %}
 {% block content %}
-    <div class="panel panel-default">
-      <!-- Default panel contents -->
-      <div class="panel-heading">Panel heading</div>
-      <div class="panel-body">
-        <p>...</p>
-      </div>
-
-      <!-- Table -->
-      <table class="table">
+    <form method="post" action="/images/?host={{hid}}">
+        <button type="submit" class="btn btn-success">创建镜像</button>
+        {% module xsrf_form_html() %}
+    </form>
+    <table class="table table-striped">
+      <tr>
+          <th>仓库:标签</th>
+          <th>ID</th>
+          <th>创建时间</th>
+          <th>大小</th>
+      </tr>
+      {% for image in images %}
         <tr>
-            <th>状态</th>
-            <th>创建时间</th>
+            <td>
+                <ul>
+                    {% for i in image.RepoTags %}
+                        <li>{{i}}</li>
+                    {% end %}
+                </ul>
+            </td>
+            <td><a href="/image/{{hid}}/{{image.Id}}">{{image.Id}}</a></td>
+            <td>{{image.Created}}</td>
+            <td>{{image.VirtualSize}}</td>
         </tr>
-        {% for image in images %}
-            <tr>
-                <td>{{image['Status']}}</td>
-                <td>{{image['Created']}}</td>
-            </tr>
-        {% end %}
-      </table>
-    </div>
+      {% end %}
+    </table>
 {% end %}

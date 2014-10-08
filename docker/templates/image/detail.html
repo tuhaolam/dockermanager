@@ -1,0 +1,37 @@
+{% extends "../base.html" %}
+{% block content %}
+    <form method="post" action="/image/{{hid}}/{{image.Id}}/delete">
+     <button type="submit" class="btn btn-danger">删除镜像</button>
+     {% module xsrf_form_html() %}
+     </form>
+    <table class="table">
+            <tr><th>架构</th><td>{{image.Architecture}}</td></tr>
+            <tr><th>创建时间</th><td>{{image.Created}}</td></tr>
+            <tr><th>作者</th><td>{{image.Author}}</td></tr>
+            <tr><th>配置</th>
+                <td>
+                    <ul>
+                        {% for  k in image.Config %}
+                            <li>{{k}}　: {{image.Config[k]}}</li>
+                        {% end %}
+                    </ul>
+            </td></tr>
+            <tr><th>容器</th><td>{{image.Container}}</td></tr>
+            <tr><th>容器配置</th>
+                <td>
+                    <ul>
+                        {% for  k in image.ContainerConfig %}
+                            <li>{{k}}　: {{image.ContainerConfig[k]}}</li>
+                        {% end %}
+                    </ul>
+                </td></tr>
+            <tr><th>Docker版本</th>
+                <td>
+                    {{image.DockerVersion}}
+                </td></tr>
+            <tr><th>操作系统</th><td>{{image.Os}}</td></tr>
+            <tr><th>Id</th><td>{{image.Id}}</td></tr>
+            <tr><th>母镜像</th><td>{{image.Parent}}</td></tr>
+            <tr><th>大小</th><td>{{image.Size}}</td></tr>
+    </table>
+{% end %}
