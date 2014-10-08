@@ -1,9 +1,8 @@
 {% extends "../base.html" %}
 {% block content %}
-    <form method="post" action="/containers/?host=1">
+    <a href="/container/deploy/{{hid}}">
         <button type="submit" class="btn btn-success">创建容器</button>
-        {% module xsrf_form_html() %}
-    </form>
+    </a>
     <table class="table table-striped">
       <tr>
           <th>容器ID</th>

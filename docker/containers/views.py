@@ -34,22 +34,35 @@ class ContainerHandler(BaseHandler):
         http = tornado.httpclient.AsyncHTTPClient()
         host = self.db.query("SELECT * FROM host WHERE id= %s",int(hid))[0]
         cb = functools.partial(self.on_op,hid=hid,cid=cid)
+        h = HTTPHeaders({"content-type": 'application/json'})
         if op=='stop':
             http.fetch("http://%s:%d/containers/%s/stop?t=5" % (host.hostname,host.port,cid),
                    callback=cb,method='POST',body="")
         elif op=='start':
             http.fetch("http://%s:%d/containers/%s/start?t=5" % (host.hostname,host.port,cid),
-                   callback=cb,method='POST',body="")
+                   callback=cb,headers=h,method='POST',body='{"PublishAllPorts":true}')
         elif op=='restart':
             http.fetch("http://%s:%d/containers/%s/restart?t=5" % (host.hostname,host.port,cid),
                    callback=cb,method='POST',body="")
         elif op =='delete':
+            cb = functools.partial(self.on_redirect_container_list,hid=hid)
             http.fetch("http://%s:%d/containers/%s?force=1" % (host.hostname,host.port,cid),
-                   callback=self.on_redirect_container_list,method='DELETE')
+                   callback=cb,method='DELETE')
 
 
 
-
+class ContainerDeployHandler(BaseHandler):
+    @tornado.web.asynchronous
+    def get(self,hid):
+        http = tornado.httpclient.AsyncHTTPClient()
+        host = self.db.query("SELECT * FROM host WHERE id= %s",int(hid))[0]
+        cb = functools.partial(self.on_response_dict,hid=hid)
+        http.fetch("http://%s:%d/images/json" % (host.hostname,host.port),
+                   callback=cb)
+    def on_response_dict(self,response,hid):
+        if response.error:raise tornado.web.HTTPError(500)
+        obj = json.loads(response.body)
+        self.render('container/add.html',hid=hid,images=[ObjectDict(image) for image in obj])
 
 
 class ContainerListHandler(BaseHandler):
@@ -75,8 +88,13 @@ class ContainerListHandler(BaseHandler):
     def post(self):
         http = tornado.httpclient.AsyncHTTPClient()
         hostid = self.get_argument('host',None)
+        name = self.get_argument('name',None)
+        image = self.get_argument('image',None)
         host = self.db.query("SELECT * FROM host WHERE id= %s",int(hostid))[0]
         h = HTTPHeaders({"content-type": "application/json"})
-        http.fetch("http://%s:%d/containers/create" % (host.hostname,host.port),
+        url= "http://%s:%d/containers/create"
+        if name:
+            url=url+"?name="+name
+        http.fetch(url % (host.hostname,host.port),
                    callback=functools.partial(self.on_redirect_container_list,hid=host.id),headers=h,
-                   method='POST',body='{"Image":"ubuntu:precise","Hostname":"xx1","AttachStdin":true}')
+                   method='POST',body='{"Image":"%s","Hostname":"xx1","AttachStdin":true}' %(image,))

@@ -26,7 +26,7 @@ import tornado
 
 from images.views import ImageListHandler,ImageHandler
 from hosts.views import HostHandler,HostListHandler
-from containers.views import ContainerListHandler,ContainerHandler
+from containers.views import ContainerListHandler,ContainerHandler,ContainerDeployHandler
 
 class Application(tornado.web.Application):
     def __init__(self):
@@ -42,6 +42,7 @@ class Application(tornado.web.Application):
             (r"/containers/",ContainerListHandler),
             (r"/containers/(?P<hid>\w+)/(?P<cid>\w+)/(?P<op>\w+)",ContainerHandler),
             (r"/containers/(?P<hid>\w+)/(?P<cid>\w+)",ContainerHandler),
+            (r"/container/deploy/(?P<hid>\w+)",ContainerDeployHandler),
 
         ]
         settings = dict(
